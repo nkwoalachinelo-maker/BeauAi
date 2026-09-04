@@ -1,0 +1,149 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-gold-deep: var(--gold-deep);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--gold);
+  --color-chart-2: var(--gold-soft);
+  --color-chart-3: var(--muted);
+  --color-chart-4: var(--accent);
+  --color-chart-5: var(--border);
+  --color-sidebar: var(--card);
+  --color-sidebar-foreground: var(--foreground);
+  --color-sidebar-primary: var(--primary);
+  --color-sidebar-primary-foreground: var(--primary-foreground);
+  --color-sidebar-accent: var(--accent);
+  --color-sidebar-accent-foreground: var(--accent-foreground);
+  --color-sidebar-border: var(--border);
+  --color-sidebar-ring: var(--ring);
+}
+
+:root {
+  --radius: 1rem;
+  --background: oklch(0.99 0.005 230);
+  --foreground: oklch(0.26 0.03 245);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.26 0.03 245);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.26 0.03 245);
+  --primary: oklch(0.7 0.11 235);
+  --primary-foreground: oklch(0.99 0.005 230);
+  --secondary: oklch(0.96 0.02 230);
+  --secondary-foreground: oklch(0.32 0.04 245);
+  --muted: oklch(0.96 0.015 230);
+  --muted-foreground: oklch(0.55 0.03 240);
+  --accent: oklch(0.93 0.04 230);
+  --accent-foreground: oklch(0.3 0.04 245);
+  --destructive: oklch(0.6 0.19 22);
+  --destructive-foreground: oklch(0.99 0.005 230);
+  --border: oklch(0.9 0.02 232);
+  --input: oklch(0.9 0.02 232);
+  --ring: oklch(0.7 0.11 235);
+  --gold: oklch(0.72 0.11 235);
+  --gold-soft: oklch(0.86 0.07 225);
+  --gold-deep: oklch(0.58 0.11 248);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: 0.01em;
+  }
+}
+
+@utility text-gilded {
+  background-image: linear-gradient(
+    100deg,
+    var(--gold-deep) 0%,
+    var(--gold) 55%,
+    var(--gold-soft) 100%
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+@utility bg-gilded {
+  background-image: linear-gradient(
+    135deg,
+    var(--gold-deep) 0%,
+    var(--gold) 60%,
+    var(--gold-soft) 100%
+  );
+}
+
+@utility surface-luxe {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 14px 40px -28px oklch(0.5 0.1 245 / 60%);
+}
+
+@utility glow-gold {
+  box-shadow:
+    0 0 0 1px oklch(0.7 0.11 235 / 25%),
+    0 14px 36px -14px oklch(0.7 0.11 235 / 45%);
+}
+
+/* Vanity makeup-mirror frame: warm-free, light-blue bulb ring */
+@utility mirror-frame {
+  border: 6px solid var(--card);
+  box-shadow:
+    0 0 0 2px var(--gold-soft),
+    0 0 34px 6px oklch(0.86 0.07 225 / 55%),
+    inset 0 0 30px 0 oklch(1 0 0 / 45%),
+    0 24px 60px -30px oklch(0.5 0.1 245 / 55%);
+}
+
+@utility mirror-sheen {
+  background:
+    radial-gradient(120% 60% at 50% -12%, oklch(1 0 0 / 55%) 0%, transparent 55%),
+    radial-gradient(90% 40% at 50% 112%, oklch(1 0 0 / 30%) 0%, transparent 60%);
+  mix-blend-mode: screen;
+}
+

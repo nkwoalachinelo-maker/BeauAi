@@ -5,3 +5,7 @@ dist
 android/app/build
 android/.gradle
 android/local.properties
+.output
+.wrangler
+extracted_temp
+app-debug.apk
