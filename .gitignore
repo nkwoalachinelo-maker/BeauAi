@@ -9,3 +9,4 @@ android/local.properties
 .wrangler
 extracted_temp
 app-debug.apk
+supabase/.temp

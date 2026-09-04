@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { App } from "@capacitor/app";
 import { useAuth } from "@/hooks/useAuth";
-import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+const AUTH_REDIRECT = "beauai://auth-callback";
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -13,6 +15,29 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const sub = App.addListener("appUrlOpen", async ({ url }) => {
+      try {
+        const parsed = new URL(url);
+        const access_token = parsed.hash
+          ? new URLSearchParams(parsed.hash.slice(1)).get("access_token")
+          : parsed.searchParams.get("access_token");
+        const refresh_token = parsed.hash
+          ? new URLSearchParams(parsed.hash.slice(1)).get("refresh_token")
+          : parsed.searchParams.get("refresh_token");
+        if (access_token && refresh_token) {
+          await supabase.auth.setSession({ access_token, refresh_token });
+          toast.success("Signed in!");
+        }
+      } catch {
+        // ignore malformed callback URLs
+      }
+    });
+    return () => {
+      sub.then((s) => s.remove());
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -23,20 +48,6 @@ export function AuthGate({ children }: { children: ReactNode }) {
   }
 
   if (user) return <>{children}</>;
-
-  const signInGoogle = async () => {
-    setBusy(true);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (result.error) {
-      toast.error("Couldn't sign you in. Try again.");
-      setBusy(false);
-      return;
-    }
-    if (result.redirected) return;
-    window.location.reload();
-  };
 
   const submitEmail = async () => {
     if (!email || password.length < 6) {
@@ -49,7 +60,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin },
+          options: { emailRedirectTo: AUTH_REDIRECT },
         });
         if (error) throw error;
         if (!data.session) toast.success("Check your email to confirm your account.");
@@ -110,20 +121,6 @@ export function AuthGate({ children }: { children: ReactNode }) {
           {mode === "signup" ? "Already have an account? Sign in" : "New here? Create an account"}
         </button>
       </div>
-
-      <div className="flex w-full items-center gap-3 text-[11px] text-muted-foreground">
-        <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
-      </div>
-
-      <Button
-        size="lg"
-        variant="secondary"
-        onClick={() => void signInGoogle()}
-        disabled={busy}
-        className="w-full font-medium"
-      >
-        {busy ? "One moment…" : "Continue with Google"}
-      </Button>
 
       <p className="text-[11px] text-muted-foreground">
         Your photos and looks stay private to your account.
