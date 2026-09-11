@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useRef, useState } from "react";
 import { Loader2, ScanLine, Save } from "lucide-react";
 import { toast } from "sonner";
@@ -39,7 +38,7 @@ export const Route = createFileRoute("/scan")({
 
 function Scan() {
   const { user } = useAuth();
-  const run = useServerFn(scanProduct);
+  const run = scanProduct;
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
   const [context, setContext] = useState("");

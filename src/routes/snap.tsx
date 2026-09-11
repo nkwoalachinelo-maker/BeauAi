@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useRef, useState } from "react";
 import { ImagePlus, Loader2, Save, Sparkles, Clapperboard, ListChecks } from "lucide-react";
 import { toast } from "sonner";
@@ -49,11 +48,11 @@ export const Route = createFileRoute("/snap")({
 
 function Snap() {
   const { user } = useAuth();
-  const analyze = useServerFn(analyzeFace);
-  const makeAfter = useServerFn(generateAfterImage);
-  const startVideo = useServerFn(startMakeoverVideo);
-  const pollVideo = useServerFn(pollMakeoverVideo);
-  const routineFn = useServerFn(buildRoutine);
+  const analyze = analyzeFace;
+  const makeAfter = generateAfterImage;
+  const startVideo = startMakeoverVideo;
+  const pollVideo = pollMakeoverVideo;
+  const routineFn = buildRoutine;
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
   const [prompt, setPrompt] = useState("");

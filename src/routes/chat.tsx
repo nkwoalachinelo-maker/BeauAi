@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -46,7 +45,7 @@ const STARTERS = [
 
 function Chat() {
   const { user } = useAuth();
-  const ask = useServerFn(chatWithBeau);
+  const ask = chatWithBeau;
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);

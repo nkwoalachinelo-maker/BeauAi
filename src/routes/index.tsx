@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Camera, Loader2, Save, Wand2 } from "lucide-react";
 import { toast } from "sonner";
@@ -47,7 +46,7 @@ function LiveAnalyze() {
   const facing = settings.camera;
   const mirrorMode = facing === "user" && settings.mirror;
   const { videoRef, ready, error, start, capture } = useCamera(facing);
-  const run = useServerFn(analyzeFace);
+  const run = analyzeFace;
   const [shot, setShot] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<FaceAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
