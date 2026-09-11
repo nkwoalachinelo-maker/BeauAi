@@ -2,7 +2,19 @@ import { supabase } from "@/integrations/supabase/client";
 
 async function invoke<T>(name: string, body: unknown): Promise<T> {
   const { data, error } = await supabase.functions.invoke(name, { body });
-  if (error) throw new Error(error.message || "That didn't work.");
+  if (error) {
+    let message = error.message || "That didn't work.";
+    const ctx = (error as { context?: Response }).context;
+    if (ctx && typeof ctx.json === "function") {
+      try {
+        const parsed = await ctx.json();
+        if (parsed?.error) message = parsed.error;
+      } catch {
+        // response wasn't JSON, keep the generic message
+      }
+    }
+    throw new Error(message);
+  }
   if (data && typeof data === "object" && "error" in data && data.error) {
     throw new Error(String((data as { error: string }).error));
   }
@@ -73,10 +85,6 @@ export function generateAfterImage(args: { data: { image: string; instructions: 
   return invoke<{ image: string }>("generate-after-image", args.data);
 }
 
-// Our video generation is synchronous (Hugging Face returns the finished file directly),
-// unlike the original Veo async job model. To avoid touching every screen that expects a
-// start+poll flow, we do the full generation in "start" and hand back the finished URL as
-// the "id" — then "poll" just returns it immediately, no second network call needed.
 export async function startMakeoverVideo(args: {
   data: { image: string; instructions: string };
 }): Promise<{ id: string }> {
