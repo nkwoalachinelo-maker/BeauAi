@@ -14,7 +14,7 @@ Keep replies short and conversational — 2-4 sentences, like a text from a frie
 ${profile ? `What you know about this person: ${JSON.stringify(profile)}` : ""}`;
 
     const json = await callGroq({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
       messages: [
         { role: "system", content: systemPrompt },
         ...messages.map((m: { role: string; content: string }) => ({

@@ -19,7 +19,7 @@ Deno.serve(async (req) => {
     const { image, skinContext } = await req.json();
     if (!image || typeof image !== "string") return jsonResponse({ error: "Bad image." }, 400);
     const json = await callGroq({
-      model: "meta-llama/llama-4-scout-17b-16e-instruct",
+      model: "qwen/qwen3.6-27b",
       messages: [
         { role: "system", content: `${BEAU_PERSONA}\n${SCHEMA}` },
         {
