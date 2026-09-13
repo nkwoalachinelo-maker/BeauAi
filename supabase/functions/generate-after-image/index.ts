@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
     const base64 = image.includes(",") ? image.split(",")[1] : image;
 
     const hfRes = await fetch(
-      "https://api-inference.huggingface.co/models/timbrooks/instruct-pix2pix",
+      "https://router.huggingface.co/hf-inference/models/timbrooks/instruct-pix2pix",
       {
         method: "POST",
         headers: {

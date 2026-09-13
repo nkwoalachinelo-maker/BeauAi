@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
     const base64 = image.includes(",") ? image.split(",")[1] : image;
 
     const hfRes = await fetch(
-      "https://api-inference.huggingface.co/models/stabilityai/stable-video-diffusion-img2vid-xt",
+      "https://router.huggingface.co/hf-inference/models/stabilityai/stable-video-diffusion-img2vid-xt",
       {
         method: "POST",
         headers: {
