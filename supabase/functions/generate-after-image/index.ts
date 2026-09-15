@@ -8,33 +8,42 @@ Deno.serve(async (req) => {
     const { image, instructions } = await req.json();
     if (!image || typeof image !== "string") return jsonResponse({ error: "Bad image." }, 400);
 
-    const hfKey = Deno.env.get("HUGGINGFACE_API_KEY");
-    if (!hfKey) throw new Error("AI is not configured yet.");
+    const geminiKey = Deno.env.get("GEMINI_API_KEY");
+    if (!geminiKey) throw new Error("AI is not configured yet.");
 
     const base64 = image.includes(",") ? image.split(",")[1] : image;
+    const mimeMatch = image.match(/^data:(image\/\w+);base64,/);
+    const mimeType = mimeMatch ? mimeMatch[1] : "image/jpeg";
 
-    const hfRes = await fetch(
-      "https://router.huggingface.co/hf-inference/models/timbrooks/instruct-pix2pix",
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${geminiKey}`,
       {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${hfKey}`,
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          inputs: base64,
-          parameters: { prompt: instructions || "apply flattering natural makeup" },
+          contents: [
+            {
+              parts: [
+                { text: `Apply this makeover to the person in the photo, keep their identity and face structure exactly the same: ${instructions || "apply flattering natural makeup"}` },
+                { inline_data: { mime_type: mimeType, data: base64 } },
+              ],
+            },
+          ],
         }),
       },
     );
 
-    if (!hfRes.ok) {
-      const text = await hfRes.text();
-      if (hfRes.status === 503) throw new Error("The image model is warming up — try again in ~20 seconds.");
-      throw new Error(`Image generation failed (${hfRes.status}): ${text.slice(0, 200)}`);
+    if (!geminiRes.ok) {
+      const text = await geminiRes.text();
+      throw new Error(`Image generation failed (${geminiRes.status}): ${text.slice(0, 300)}`);
     }
 
-    const imageBytes = new Uint8Array(await hfRes.arrayBuffer());
+    const result = await geminiRes.json();
+    const parts = result?.candidates?.[0]?.content?.parts ?? [];
+    const imagePart = parts.find((p: { inlineData?: { data?: string } }) => p.inlineData?.data);
+    if (!imagePart) throw new Error("Gemini didn't return an image — try a different photo or instructions.");
+
+    const outBytes = Uint8Array.from(atob(imagePart.inlineData.data), (c) => c.charCodeAt(0));
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -43,7 +52,7 @@ Deno.serve(async (req) => {
     const path = `${userId}/${crypto.randomUUID()}.png`;
     const { error: uploadError } = await supabaseAdmin.storage
       .from("beau-media")
-      .upload(path, imageBytes, { contentType: "image/png", upsert: true });
+      .upload(path, outBytes, { contentType: "image/png", upsert: true });
     if (uploadError) throw new Error(`Couldn't save the result: ${uploadError.message}`);
 
     const { data } = supabaseAdmin.storage.from("beau-media").getPublicUrl(path);
