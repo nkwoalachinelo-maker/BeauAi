@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "Bad image." }, 400);
     }
     const json = await callGroq({
-      model: "qwen/qwen3.6-27b",
+      model: "qwen/qwen3.8-27b",
       messages: [
         { role: "system", content: `${BEAU_PERSONA}\n${SCHEMA}` },
         {
