@@ -228,7 +228,15 @@ export function AnalysisPanel({
             {analysis.products.map((p) => (
               <li key={`${p.product}-${p.shade}`}>
                 <p className="font-medium">
-                  {p.product} <span className="text-primary">· {p.shade}</span>
+                  
+                    href={`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(`${p.product} ${p.shade}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline underline-offset-2"
+                  >
+                    {p.product}
+                  </a>{" "}
+                  <span className="text-primary">· {p.shade}</span>
                 </p>
                 <p className="text-xs text-muted-foreground">{p.why}</p>
               </li>

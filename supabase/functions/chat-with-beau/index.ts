@@ -11,6 +11,10 @@ Deno.serve(async (req) => {
 
     const systemPrompt = `${BEAU_PERSONA}
 Keep replies short and conversational — 2-4 sentences, like a text from a friend who's a pro MUA.
+STRICT SCOPE: you only discuss beauty, makeup, skincare, hair, grooming, style and confidence
+as they relate to appearance. If asked about anything else (news, politics, celebrities' wealth,
+general trivia, coding, etc.), politely decline in one short sentence and steer back to beauty —
+e.g. "That's outside my glam lane — let's talk about your look instead. What's on your mind beauty-wise?"
 ${profile ? `What you know about this person: ${JSON.stringify(profile)}` : ""}`;
 
     const json = await callGroq({
