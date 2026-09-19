@@ -149,14 +149,7 @@ function Scan() {
                   {result.alternatives.map((a) => (
                     <li key={`${a.name}-${a.shade}`}>
                       <p className="font-medium">
-                        
-                          href={`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(`${a.name} ${a.shade}`)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary underline underline-offset-2"
-                        >
-                          {a.name}
-                        </a>{" "}
+                        <a href={`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(`${a.name} ${a.shade}`)}`} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">{a.name}</a>{" "}
                         <span className="text-primary">· {a.shade}</span>
                       </p>
                       <p className="text-xs text-muted-foreground">{a.why}</p>
